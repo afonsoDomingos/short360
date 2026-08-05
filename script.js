@@ -159,10 +159,9 @@ class Shorts360 {
                     const shortBlob = await this.createVideoSegment(video, startTime, endTime);
                     const shortUrl = URL.createObjectURL(shortBlob);
                     
-                    const extension = shortBlob.type.includes('mp4') ? 'mp4' : 'webm';
-                    
+                    // Always use MP4 extension
                     this.shorts.push({
-                        name: `short_${i + 1}.${extension}`,
+                        name: `short_${i + 1}.mp4`,
                         url: shortUrl,
                         blob: shortBlob,
                         startTime: this.formatTime(startTime),
@@ -204,12 +203,12 @@ class Shorts360 {
                 
                 const settings = qualitySettings[quality] || qualitySettings.medium;
 
-                // Try to get supported MIME type
+                // Try to get supported MIME type - prioritize MP4
                 const mimeTypes = [
+                    'video/mp4',
                     'video/webm;codecs=vp9',
                     'video/webm;codecs=vp8',
-                    'video/webm',
-                    'video/mp4'
+                    'video/webm'
                 ];
                 
                 let supportedMimeType = null;
@@ -244,6 +243,7 @@ class Shorts360 {
                 };
 
                 mediaRecorder.onstop = () => {
+                    // Always create as MP4 extension
                     const blob = new Blob(chunks, { type: supportedMimeType });
                     resolve(blob);
                 };

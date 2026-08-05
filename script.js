@@ -19,7 +19,12 @@ class Shorts360 {
         this.uploadSpinner = document.getElementById('uploadSpinner');
         this.uploadText = document.getElementById('uploadText');
         this.loadingText = document.getElementById('loadingText');
+        this.splitMode = document.getElementById('splitMode');
         this.shortDuration = document.getElementById('shortDuration');
+        this.shortCount = document.getElementById('shortCount');
+        this.durationGroup = document.getElementById('durationGroup');
+        this.countGroup = document.getElementById('countGroup');
+        this.calculatedDuration = document.getElementById('calculatedDuration');
         this.quality = document.getElementById('quality');
         this.generateBtn = document.getElementById('generateBtn');
         this.progressSection = document.getElementById('progressSection');
@@ -37,6 +42,8 @@ class Shorts360 {
         this.uploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
         this.videoInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        this.splitMode.addEventListener('change', () => this.handleSplitModeChange());
+        this.shortCount.addEventListener('change', () => this.updateCalculatedDuration());
         this.generateBtn.addEventListener('click', () => this.generateShorts());
         this.downloadAllBtn.addEventListener('click', () => this.downloadAllShorts());
     }
@@ -49,6 +56,30 @@ class Shorts360 {
     handleDragLeave(e) {
         e.preventDefault();
         this.uploadArea.classList.remove('dragover');
+    }
+
+    handleSplitModeChange() {
+        const mode = this.splitMode.value;
+        if (mode === 'duration') {
+            this.durationGroup.style.display = 'block';
+            this.countGroup.style.display = 'none';
+        } else {
+            this.durationGroup.style.display = 'none';
+            this.countGroup.style.display = 'block';
+            this.updateCalculatedDuration();
+        }
+    }
+
+    updateCalculatedDuration() {
+        if (this.videoDuration > 0) {
+            const count = parseInt(this.shortCount.value);
+            const durationPerShort = this.videoDuration / count;
+            const minutes = Math.floor(durationPerShort / 60);
+            const seconds = Math.floor(durationPerShort % 60);
+            this.calculatedDuration.textContent = `Cada short: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            this.calculatedDuration.textContent = 'Carregue um vídeo primeiro';
+        }
     }
 
     handleDrop(e) {
@@ -106,6 +137,7 @@ class Shorts360 {
             this.uploadArea.style.pointerEvents = 'auto';
             
             this.generateBtn.disabled = false;
+            this.updateCalculatedDuration();
             this.showToast('Vídeo carregado com sucesso! 🎉');
             URL.revokeObjectURL(video.src);
         };
@@ -126,8 +158,17 @@ class Shorts360 {
     }
 
     async generateShorts() {
-        const segmentDuration = parseInt(this.shortDuration.value);
-        const totalSegments = Math.ceil(this.videoDuration / segmentDuration);
+        const mode = this.splitMode.value;
+        let segmentDuration;
+        let totalSegments;
+
+        if (mode === 'duration') {
+            segmentDuration = parseInt(this.shortDuration.value);
+            totalSegments = Math.ceil(this.videoDuration / segmentDuration);
+        } else {
+            totalSegments = parseInt(this.shortCount.value);
+            segmentDuration = this.videoDuration / totalSegments;
+        }
         
         this.progressSection.style.display = 'block';
         this.resultsSection.style.display = 'none';

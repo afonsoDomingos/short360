@@ -34,6 +34,14 @@
 
             <div class="settings-section">
                 <div class="setting-group">
+                    <label for="splitMode">Modo de divisão:</label>
+                    <select id="splitMode">
+                        <option value="duration" selected>Por duração</option>
+                        <option value="count">Por número de shorts</option>
+                    </select>
+                </div>
+
+                <div class="setting-group" id="durationGroup">
                     <label for="shortDuration">Duração:</label>
                     <select id="shortDuration">
                         <option value="15">15s</option>
@@ -41,6 +49,20 @@
                         <option value="45">45s</option>
                         <option value="60">60s</option>
                     </select>
+                </div>
+
+                <div class="setting-group" id="countGroup" style="display: none;">
+                    <label for="shortCount">Número de shorts:</label>
+                    <select id="shortCount">
+                        <option value="2">2 shorts</option>
+                        <option value="3" selected>3 shorts</option>
+                        <option value="4">4 shorts</option>
+                        <option value="5">5 shorts</option>
+                        <option value="6">6 shorts</option>
+                        <option value="8">8 shorts</option>
+                        <option value="10">10 shorts</option>
+                    </select>
+                    <p class="calculated-duration" id="calculatedDuration"></p>
                 </div>
 
                 <div class="setting-group">

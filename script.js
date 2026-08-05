@@ -200,9 +200,9 @@ class Shorts360 {
                     const shortBlob = await this.createVideoSegment(video, startTime, endTime);
                     const shortUrl = URL.createObjectURL(shortBlob);
                     
-                    // Always use MP4 extension
+                    // Always use MP4 extension with Short1, Short2 format
                     this.shorts.push({
-                        name: `short_${i + 1}.mp4`,
+                        name: `Short${i + 1}.mp4`,
                         url: shortUrl,
                         blob: shortBlob,
                         startTime: this.formatTime(startTime),

@@ -21,6 +21,7 @@ class Shorts360 {
         this.resultsSection = document.getElementById('resultsSection');
         this.shortsList = document.getElementById('shortsList');
         this.downloadAllBtn = document.getElementById('downloadAllBtn');
+        this.toast = document.getElementById('toast');
     }
 
     attachEventListeners() {
@@ -79,6 +80,7 @@ class Shorts360 {
             this.videoDurationEl.textContent = `Duração: ${minutes}:${seconds.toString().padStart(2, '0')}`;
             this.videoInfo.style.display = 'block';
             this.generateBtn.disabled = false;
+            this.showToast('Vídeo carregado com sucesso! 🎉');
             URL.revokeObjectURL(video.src);
         };
 
@@ -141,6 +143,7 @@ class Shorts360 {
             
             if (this.shorts.length > 0) {
                 this.displayResults();
+                this.showToast(`${this.shorts.length} shorts criados com sucesso! 🎬`);
             } else {
                 this.showError('Não foi possível criar nenhum short. Tente novamente.');
             }
@@ -267,9 +270,11 @@ class Shorts360 {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        this.showToast(`Download iniciado: ${short.name} 📥`);
     }
 
     downloadAllShorts() {
+        this.showToast(`Iniciando download de ${this.shorts.length} shorts... 📥`);
         this.shorts.forEach((short, index) => {
             setTimeout(() => {
                 this.downloadShort(index);
@@ -278,8 +283,18 @@ class Shorts360 {
     }
 
     showError(message) {
-        alert(message);
+        this.showToast(message, 'error');
         this.progressSection.style.display = 'none';
+    }
+
+    showToast(message, type = 'success') {
+        this.toast.textContent = message;
+        this.toast.className = 'toast ' + type;
+        this.toast.classList.add('show');
+        
+        setTimeout(() => {
+            this.toast.classList.remove('show');
+        }, 3000);
     }
 }
 

@@ -78,9 +78,19 @@ class Shorts360 {
             const durationPerShort = this.videoDuration / count;
             const minutes = Math.floor(durationPerShort / 60);
             const seconds = Math.floor(durationPerShort % 60);
-            this.calculatedDuration.textContent = `Cada short: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            const secondsDecimal = (durationPerShort % 60).toFixed(1);
+            
+            // Warn if segments are too short
+            if (durationPerShort < 5) {
+                this.calculatedDuration.textContent = `⚠️ Muito curto: ${secondsDecimal}s (mín: 5s)`;
+                this.calculatedDuration.style.color = '#ef4444';
+            } else {
+                this.calculatedDuration.textContent = `Cada short: ${minutes}:${seconds.toString().padStart(2, '0')} (${secondsDecimal}s)`;
+                this.calculatedDuration.style.color = 'var(--text-secondary)';
+            }
         } else {
             this.calculatedDuration.textContent = 'Carregue um vídeo primeiro';
+            this.calculatedDuration.style.color = 'var(--text-secondary)';
         }
     }
 
@@ -201,7 +211,14 @@ class Shorts360 {
             totalSegments = Math.ceil(this.videoDuration / segmentDuration);
         } else {
             totalSegments = parseInt(this.shortCount.value);
+            // Calculate precise segment duration
             segmentDuration = this.videoDuration / totalSegments;
+            
+            // Validate minimum segment duration (at least 5 seconds)
+            if (segmentDuration < 5) {
+                this.showError(`Duração muito curta: ${segmentDuration.toFixed(1)}s por short. Mínimo: 5s`);
+                return;
+            }
         }
         
         this.progressSection.style.display = 'block';
@@ -227,7 +244,17 @@ class Shorts360 {
 
             for (let i = 0; i < totalSegments; i++) {
                 const startTime = i * segmentDuration;
-                const endTime = Math.min(startTime + segmentDuration, this.videoDuration);
+                let endTime = startTime + segmentDuration;
+                
+                // Ensure last segment doesn't exceed video duration
+                if (endTime > this.videoDuration) {
+                    endTime = this.videoDuration;
+                }
+                
+                // Skip if segment would be too short (less than 1 second)
+                if (endTime - startTime < 1) {
+                    continue;
+                }
                 
                 const progress = ((i + 1) / totalSegments) * 100;
                 this.progressFill.style.width = `${progress}%`;
@@ -332,15 +359,30 @@ class Shorts360 {
 
                 mediaRecorder.start(100);
 
+                // Set video to start time and wait for seek
                 video.currentTime = startTime;
                 
+                let frameCount = 0;
+                const totalFrames = Math.ceil((endTime - startTime) * settings.fps);
+                
                 const processFrame = () => {
-                    if (video.currentTime >= endTime || video.ended) {
+                    if (video.currentTime >= endTime || video.ended || frameCount >= totalFrames) {
                         mediaRecorder.stop();
                         video.ontimeupdate = null;
                     } else {
                         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        video.currentTime += 1/settings.fps;
+                        frameCount++;
+                        
+                        // More precise time calculation
+                        const nextTime = startTime + (frameCount / settings.fps);
+                        if (nextTime < endTime) {
+                            video.currentTime = nextTime;
+                        } else {
+                            mediaRecorder.stop();
+                            video.ontimeupdate = null;
+                            return;
+                        }
+                        
                         requestAnimationFrame(processFrame);
                     }
                 };

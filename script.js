@@ -19,6 +19,7 @@ class Shorts360 {
         this.uploadSpinner = document.getElementById('uploadSpinner');
         this.uploadText = document.getElementById('uploadText');
         this.loadingText = document.getElementById('loadingText');
+        this.newVideoBtn = document.getElementById('newVideoBtn');
         this.splitMode = document.getElementById('splitMode');
         this.shortDuration = document.getElementById('shortDuration');
         this.shortCount = document.getElementById('shortCount');
@@ -42,6 +43,7 @@ class Shorts360 {
         this.uploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
         this.videoInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        this.newVideoBtn.addEventListener('click', () => this.resetForNewVideo());
         this.splitMode.addEventListener('change', () => this.handleSplitModeChange());
         this.shortCount.addEventListener('change', () => this.updateCalculatedDuration());
         this.generateBtn.addEventListener('click', () => this.generateShorts());
@@ -80,6 +82,35 @@ class Shorts360 {
         } else {
             this.calculatedDuration.textContent = 'Carregue um vídeo primeiro';
         }
+    }
+
+    resetForNewVideo() {
+        // Reset all state
+        this.videoFile = null;
+        this.videoDuration = 0;
+        this.shorts = [];
+        
+        // Reset UI elements
+        this.uploadArea.style.display = 'block';
+        this.videoInfo.style.display = 'none';
+        this.videoPreview.style.display = 'none';
+        this.previewVideo.src = '';
+        this.generateBtn.disabled = true;
+        this.progressSection.style.display = 'none';
+        this.resultsSection.style.display = 'none';
+        this.shortsList.innerHTML = '';
+        
+        // Reset upload area
+        this.uploadIcon.style.display = 'block';
+        this.uploadSpinner.classList.remove('active');
+        this.uploadText.style.display = 'block';
+        this.loadingText.classList.remove('active');
+        this.uploadArea.style.pointerEvents = 'auto';
+        
+        // Clear file input
+        this.videoInput.value = '';
+        
+        this.showToast('Pronto para carregar novo vídeo 📹');
     }
 
     handleDrop(e) {
@@ -136,6 +167,9 @@ class Shorts360 {
             this.loadingText.classList.remove('active');
             this.uploadArea.style.pointerEvents = 'auto';
             
+            // Hide upload area after video is loaded
+            this.uploadArea.style.display = 'none';
+            
             this.generateBtn.disabled = false;
             this.updateCalculatedDuration();
             this.showToast('Vídeo carregado com sucesso! 🎉');
@@ -176,6 +210,9 @@ class Shorts360 {
         this.shortsList.innerHTML = '';
         this.generateBtn.disabled = true;
         this.generateBtn.classList.add('loading');
+        
+        // Hide video preview during processing to save space
+        this.videoPreview.style.display = 'none';
 
         try {
             const video = document.createElement('video');
@@ -332,6 +369,9 @@ class Shorts360 {
     displayResults() {
         this.progressSection.style.display = 'none';
         this.resultsSection.style.display = 'block';
+        
+        // Hide video preview to save space when showing results
+        this.videoPreview.style.display = 'none';
 
         this.shorts.forEach((short, index) => {
             const shortItem = document.createElement('div');

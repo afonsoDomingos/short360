@@ -177,6 +177,24 @@ header h1 {
     font-size: 0.8rem;
 }
 
+.new-video-btn {
+    width: 100%;
+    padding: 8px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 8px;
+}
+
+.new-video-btn:hover {
+    background: var(--primary-dark);
+}
+
 .video-preview {
     margin-top: 12px;
     border-radius: var(--radius-sm);

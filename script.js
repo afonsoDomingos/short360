@@ -12,7 +12,7 @@ class Shorts360 {
         this.videoInput = document.getElementById('videoInput');
         this.videoInfo = document.getElementById('videoInfo');
         this.videoName = document.getElementById('videoName');
-        this.videoDuration = document.getElementById('videoDuration');
+        this.videoDurationEl = document.getElementById('videoDuration');
         this.shortDuration = document.getElementById('shortDuration');
         this.generateBtn = document.getElementById('generateBtn');
         this.progressSection = document.getElementById('progressSection');
@@ -60,6 +60,11 @@ class Shorts360 {
     }
 
     processVideoFile(file) {
+        if (!file.type.startsWith('video/')) {
+            this.showError('Por favor, selecione um arquivo de vídeo válido.');
+            return;
+        }
+
         this.videoFile = file;
         this.videoName.textContent = `Arquivo: ${file.name}`;
         
@@ -71,10 +76,16 @@ class Shorts360 {
             this.videoDuration = video.duration;
             const minutes = Math.floor(video.duration / 60);
             const seconds = Math.floor(video.duration % 60);
-            this.videoDuration.textContent = `Duração: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            this.videoDurationEl.textContent = `Duração: ${minutes}:${seconds.toString().padStart(2, '0')}`;
             this.videoInfo.style.display = 'block';
             this.generateBtn.disabled = false;
             URL.revokeObjectURL(video.src);
+        };
+
+        video.onerror = () => {
+            this.showError('Erro ao carregar o vídeo. Tente outro arquivo.');
+            this.videoInfo.style.display = 'none';
+            this.generateBtn.disabled = true;
         };
     }
 
@@ -86,84 +97,139 @@ class Shorts360 {
         this.resultsSection.style.display = 'none';
         this.shorts = [];
         this.shortsList.innerHTML = '';
+        this.generateBtn.disabled = true;
 
-        const video = document.createElement('video');
-        video.src = URL.createObjectURL(this.videoFile);
-        video.muted = true;
-        
-        await new Promise(resolve => {
-            video.onloadeddata = resolve;
-        });
-
-        for (let i = 0; i < totalSegments; i++) {
-            const startTime = i * segmentDuration;
-            const endTime = Math.min(startTime + segmentDuration, this.videoDuration);
+        try {
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(this.videoFile);
+            video.muted = true;
+            video.crossOrigin = 'anonymous';
             
-            const progress = ((i + 1) / totalSegments) * 100;
-            this.progressFill.style.width = `${progress}%`;
-            this.progressText.textContent = `Gerando short ${i + 1} de ${totalSegments}...`;
+            await new Promise((resolve, reject) => {
+                video.onloadeddata = resolve;
+                video.onerror = () => reject(new Error('Erro ao carregar vídeo'));
+            });
 
-            try {
-                const shortBlob = await this.createVideoSegment(video, startTime, endTime);
-                const shortUrl = URL.createObjectURL(shortBlob);
+            for (let i = 0; i < totalSegments; i++) {
+                const startTime = i * segmentDuration;
+                const endTime = Math.min(startTime + segmentDuration, this.videoDuration);
                 
-                this.shorts.push({
-                    name: `short_${i + 1}.mp4`,
-                    url: shortUrl,
-                    blob: shortBlob,
-                    startTime: this.formatTime(startTime),
-                    endTime: this.formatTime(endTime)
-                });
-            } catch (error) {
-                console.error(`Erro ao criar segmento ${i + 1}:`, error);
-            }
-        }
+                const progress = ((i + 1) / totalSegments) * 100;
+                this.progressFill.style.width = `${progress}%`;
+                this.progressText.textContent = `Gerando short ${i + 1} de ${totalSegments}...`;
 
-        URL.revokeObjectURL(video.src);
-        this.displayResults();
+                try {
+                    const shortBlob = await this.createVideoSegment(video, startTime, endTime);
+                    const shortUrl = URL.createObjectURL(shortBlob);
+                    
+                    const extension = shortBlob.type.includes('mp4') ? 'mp4' : 'webm';
+                    
+                    this.shorts.push({
+                        name: `short_${i + 1}.${extension}`,
+                        url: shortUrl,
+                        blob: shortBlob,
+                        startTime: this.formatTime(startTime),
+                        endTime: this.formatTime(endTime)
+                    });
+                } catch (error) {
+                    console.error(`Erro ao criar segmento ${i + 1}:`, error);
+                    this.showError(`Erro ao criar segmento ${i + 1}: ${error.message}`);
+                }
+            }
+
+            URL.revokeObjectURL(video.src);
+            
+            if (this.shorts.length > 0) {
+                this.displayResults();
+            } else {
+                this.showError('Não foi possível criar nenhum short. Tente novamente.');
+            }
+        } catch (error) {
+            console.error('Erro ao gerar shorts:', error);
+            this.showError('Erro ao processar vídeo: ' + error.message);
+        } finally {
+            this.generateBtn.disabled = false;
+        }
     }
 
     async createVideoSegment(video, startTime, endTime) {
         return new Promise((resolve, reject) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = video.videoWidth || 1080;
-            canvas.height = video.videoHeight || 1920;
-
-            const stream = canvas.captureStream(30);
-            const mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm;codecs=vp9'
-            });
-
-            const chunks = [];
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) {
-                    chunks.push(e.data);
+            try {
+                // Try to get supported MIME type
+                const mimeTypes = [
+                    'video/webm;codecs=vp9',
+                    'video/webm;codecs=vp8',
+                    'video/webm',
+                    'video/mp4'
+                ];
+                
+                let supportedMimeType = null;
+                for (const mimeType of mimeTypes) {
+                    if (MediaRecorder.isTypeSupported(mimeType)) {
+                        supportedMimeType = mimeType;
+                        break;
+                    }
                 }
-            };
 
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                resolve(blob);
-            };
-
-            mediaRecorder.onerror = reject;
-            mediaRecorder.start();
-
-            video.currentTime = startTime;
-            
-            video.ontimeupdate = () => {
-                if (video.currentTime >= endTime || video.ended) {
-                    mediaRecorder.stop();
-                    video.ontimeupdate = null;
-                } else {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    video.currentTime += 1/30;
+                if (!supportedMimeType) {
+                    throw new Error('Nenhum formato de vídeo suportado encontrado');
                 }
-            };
 
-            video.onerror = reject;
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = video.videoWidth || 1080;
+                canvas.height = video.videoHeight || 1920;
+
+                const stream = canvas.captureStream(30);
+                const mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: supportedMimeType,
+                    videoBitsPerSecond: 2500000
+                });
+
+                const chunks = [];
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        chunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: supportedMimeType });
+                    resolve(blob);
+                };
+
+                mediaRecorder.onerror = (e) => {
+                    reject(new Error('Erro no MediaRecorder: ' + e.error));
+                };
+
+                mediaRecorder.start(100);
+
+                video.currentTime = startTime;
+                
+                const processFrame = () => {
+                    if (video.currentTime >= endTime || video.ended) {
+                        mediaRecorder.stop();
+                        video.ontimeupdate = null;
+                    } else {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        video.currentTime += 1/30;
+                        requestAnimationFrame(processFrame);
+                    }
+                };
+
+                video.onseeked = () => {
+                    video.onseeked = null;
+                    processFrame();
+                };
+
+                video.onerror = (e) => {
+                    reject(new Error('Erro ao processar vídeo: ' + e.error));
+                };
+
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
@@ -209,6 +275,11 @@ class Shorts360 {
                 this.downloadShort(index);
             }, index * 500);
         });
+    }
+
+    showError(message) {
+        alert(message);
+        this.progressSection.style.display = 'none';
     }
 }
 

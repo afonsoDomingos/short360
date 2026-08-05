@@ -9,11 +9,11 @@
     --text-secondary: #64748b;
     --border: #e2e8f0;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     --radius: 16px;
     --radius-sm: 8px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.3s ease;
 }
 
 * {
@@ -41,18 +41,6 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 32px 24px;
-    animation: slideUp 0.6s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 header {
@@ -125,12 +113,6 @@ header h1 {
 .upload-icon {
     font-size: 3.5rem;
     margin-bottom: 16px;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
 }
 
 .upload-area p {
@@ -151,12 +133,6 @@ header h1 {
     border-radius: var(--radius-sm);
     margin-top: 16px;
     border: 1px solid rgba(99, 102, 241, 0.2);
-    animation: fadeIn 0.4s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .video-info p {
@@ -216,24 +192,7 @@ header h1 {
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
-    position: relative;
-    overflow: hidden;
     letter-spacing: 0.025em;
-}
-
-.btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.btn-primary:hover:not(:disabled)::before {
-    left: 100%;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -275,7 +234,6 @@ header h1 {
 
 .progress-section {
     margin-bottom: 24px;
-    animation: fadeIn 0.4s ease-out;
 }
 
 .progress-bar {
@@ -292,24 +250,8 @@ header h1 {
     height: 100%;
     background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
     width: 0%;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.4s ease;
     position: relative;
-}
-
-.progress-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
 }
 
 #progressText {
@@ -321,7 +263,6 @@ header h1 {
 
 .results-section {
     margin-top: 24px;
-    animation: fadeIn 0.4s ease-out;
 }
 
 .results-section h2 {
@@ -434,11 +375,11 @@ footer p {
 }
 
 .toast.error {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: #ef4444;
 }
 
 .toast.success {
-    background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+    background: var(--secondary);
 }
 
 /* Tablet and up */

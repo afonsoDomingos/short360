@@ -15,6 +15,10 @@ class Shorts360 {
         this.videoDurationEl = document.getElementById('videoDuration');
         this.videoPreview = document.getElementById('videoPreview');
         this.previewVideo = document.getElementById('previewVideo');
+        this.uploadIcon = document.getElementById('uploadIcon');
+        this.uploadSpinner = document.getElementById('uploadSpinner');
+        this.uploadText = document.getElementById('uploadText');
+        this.loadingText = document.getElementById('loadingText');
         this.shortDuration = document.getElementById('shortDuration');
         this.quality = document.getElementById('quality');
         this.generateBtn = document.getElementById('generateBtn');
@@ -69,6 +73,13 @@ class Shorts360 {
             return;
         }
 
+        // Show loading state
+        this.uploadIcon.style.display = 'none';
+        this.uploadSpinner.classList.add('active');
+        this.uploadText.style.display = 'none';
+        this.loadingText.classList.add('active');
+        this.uploadArea.style.pointerEvents = 'none';
+
         this.videoFile = file;
         this.videoName.textContent = `Arquivo: ${file.name}`;
         
@@ -87,6 +98,13 @@ class Shorts360 {
             this.previewVideo.src = URL.createObjectURL(file);
             this.videoPreview.style.display = 'block';
             
+            // Reset upload area
+            this.uploadIcon.style.display = 'block';
+            this.uploadSpinner.classList.remove('active');
+            this.uploadText.style.display = 'block';
+            this.loadingText.classList.remove('active');
+            this.uploadArea.style.pointerEvents = 'auto';
+            
             this.generateBtn.disabled = false;
             this.showToast('Vídeo carregado com sucesso! 🎉');
             URL.revokeObjectURL(video.src);
@@ -97,6 +115,13 @@ class Shorts360 {
             this.videoInfo.style.display = 'none';
             this.videoPreview.style.display = 'none';
             this.generateBtn.disabled = true;
+            
+            // Reset upload area
+            this.uploadIcon.style.display = 'block';
+            this.uploadSpinner.classList.remove('active');
+            this.uploadText.style.display = 'block';
+            this.loadingText.classList.remove('active');
+            this.uploadArea.style.pointerEvents = 'auto';
         };
     }
 
@@ -109,6 +134,7 @@ class Shorts360 {
         this.shorts = [];
         this.shortsList.innerHTML = '';
         this.generateBtn.disabled = true;
+        this.generateBtn.classList.add('loading');
 
         try {
             const video = document.createElement('video');
@@ -161,6 +187,7 @@ class Shorts360 {
             this.showError('Erro ao processar vídeo: ' + error.message);
         } finally {
             this.generateBtn.disabled = false;
+            this.generateBtn.classList.remove('loading');
         }
     }
 

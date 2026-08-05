@@ -16,9 +16,11 @@
         <main>
             <div class="upload-section">
                 <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📹</div>
-                    <p>Arraste seu vídeo</p>
+                    <div class="upload-icon" id="uploadIcon">📹</div>
+                    <div class="spinner" id="uploadSpinner"></div>
+                    <p id="uploadText">Arraste seu vídeo</p>
                     <p class="upload-hint">ou clique para selecionar</p>
+                    <p class="loading-text" id="loadingText">Carregando vídeo...</p>
                     <input type="file" id="videoInput" accept="video/*" hidden>
                 </div>
                 <div class="video-info" id="videoInfo" style="display: none;">
@@ -51,7 +53,8 @@
                 </div>
 
                 <button id="generateBtn" class="btn-primary" disabled>
-                    Gerar Shorts
+                    <span class="btn-text">Gerar Shorts</span>
+                    <span class="btn-spinner"></span>
                 </button>
             </div>
 

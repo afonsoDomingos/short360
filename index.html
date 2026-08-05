@@ -25,6 +25,9 @@
                     <p id="videoName"></p>
                     <p id="videoDuration"></p>
                 </div>
+                <div class="video-preview" id="videoPreview" style="display: none;">
+                    <video id="previewVideo" controls muted></video>
+                </div>
             </div>
 
             <div class="settings-section">
@@ -35,6 +38,15 @@
                         <option value="30" selected>30s</option>
                         <option value="45">45s</option>
                         <option value="60">60s</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label for="quality">Qualidade:</label>
+                    <select id="quality">
+                        <option value="low">Baixa (rápido)</option>
+                        <option value="medium" selected>Média</option>
+                        <option value="high">Alta (lento)</option>
                     </select>
                 </div>
 

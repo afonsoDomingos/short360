@@ -13,7 +13,10 @@ class Shorts360 {
         this.videoInfo = document.getElementById('videoInfo');
         this.videoName = document.getElementById('videoName');
         this.videoDurationEl = document.getElementById('videoDuration');
+        this.videoPreview = document.getElementById('videoPreview');
+        this.previewVideo = document.getElementById('previewVideo');
         this.shortDuration = document.getElementById('shortDuration');
+        this.quality = document.getElementById('quality');
         this.generateBtn = document.getElementById('generateBtn');
         this.progressSection = document.getElementById('progressSection');
         this.progressFill = document.getElementById('progressFill');
@@ -79,6 +82,11 @@ class Shorts360 {
             const seconds = Math.floor(video.duration % 60);
             this.videoDurationEl.textContent = `Duração: ${minutes}:${seconds.toString().padStart(2, '0')}`;
             this.videoInfo.style.display = 'block';
+            
+            // Show video preview
+            this.previewVideo.src = URL.createObjectURL(file);
+            this.videoPreview.style.display = 'block';
+            
             this.generateBtn.disabled = false;
             this.showToast('Vídeo carregado com sucesso! 🎉');
             URL.revokeObjectURL(video.src);
@@ -87,6 +95,7 @@ class Shorts360 {
         video.onerror = () => {
             this.showError('Erro ao carregar o vídeo. Tente outro arquivo.');
             this.videoInfo.style.display = 'none';
+            this.videoPreview.style.display = 'none';
             this.generateBtn.disabled = true;
         };
     }
@@ -158,6 +167,16 @@ class Shorts360 {
     async createVideoSegment(video, startTime, endTime) {
         return new Promise((resolve, reject) => {
             try {
+                // Get quality setting
+                const quality = this.quality.value;
+                const qualitySettings = {
+                    low: { bitrate: 1000000, fps: 15 },
+                    medium: { bitrate: 2500000, fps: 30 },
+                    high: { bitrate: 5000000, fps: 30 }
+                };
+                
+                const settings = qualitySettings[quality] || qualitySettings.medium;
+
                 // Try to get supported MIME type
                 const mimeTypes = [
                     'video/webm;codecs=vp9',
@@ -184,10 +203,10 @@ class Shorts360 {
                 canvas.width = video.videoWidth || 1080;
                 canvas.height = video.videoHeight || 1920;
 
-                const stream = canvas.captureStream(30);
+                const stream = canvas.captureStream(settings.fps);
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: supportedMimeType,
-                    videoBitsPerSecond: 2500000
+                    videoBitsPerSecond: settings.bitrate
                 });
 
                 const chunks = [];
@@ -216,7 +235,7 @@ class Shorts360 {
                         video.ontimeupdate = null;
                     } else {
                         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        video.currentTime += 1/30;
+                        video.currentTime += 1/settings.fps;
                         requestAnimationFrame(processFrame);
                     }
                 };
@@ -254,12 +273,51 @@ class Shorts360 {
                     <div class="short-name">${short.name}</div>
                     <div class="short-time">${short.startTime} - ${short.endTime}</div>
                 </div>
-                <button class="download-btn" onclick="window.downloadShort(${index})">
-                    Baixar
-                </button>
+                <div class="short-actions">
+                    <button class="preview-btn" onclick="window.previewShort(${index})">
+                        ▶️
+                    </button>
+                    <button class="download-btn" onclick="window.downloadShort(${index})">
+                        Baixar
+                    </button>
+                </div>
             `;
             this.shortsList.appendChild(shortItem);
         });
+    }
+
+    previewShort(index) {
+        const short = this.shorts[index];
+        const video = document.createElement('video');
+        video.src = short.url;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.maxWidth = '100%';
+        video.style.maxHeight = '300px';
+        video.style.borderRadius = '8px';
+        video.style.marginTop = '10px';
+        
+        const previewContainer = document.createElement('div');
+        previewContainer.className = 'short-preview-container';
+        previewContainer.style.marginTop = '10px';
+        previewContainer.appendChild(video);
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '✕ Fechar';
+        closeBtn.className = 'close-preview-btn';
+        closeBtn.style.marginTop = '8px';
+        closeBtn.style.padding = '6px 12px';
+        closeBtn.style.background = '#ef4444';
+        closeBtn.style.color = 'white';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '4px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.onclick = () => previewContainer.remove();
+        
+        previewContainer.appendChild(closeBtn);
+        
+        const shortItem = this.shortsList.children[index];
+        shortItem.appendChild(previewContainer);
     }
 
     downloadShort(index) {
@@ -300,6 +358,10 @@ class Shorts360 {
 
 window.downloadShort = function(index) {
     window.shorts360.downloadShort(index);
+};
+
+window.previewShort = function(index) {
+    window.shorts360.previewShort(index);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

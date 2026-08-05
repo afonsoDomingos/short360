@@ -146,6 +146,21 @@ header h1 {
     font-size: 0.8rem;
 }
 
+.video-preview {
+    margin-top: 12px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 2px solid var(--border);
+}
+
+.video-preview video {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    background: #000;
+}
+
 .settings-section {
     margin-bottom: 16px;
     flex-shrink: 0;
@@ -320,6 +335,27 @@ header h1 {
     font-size: 0.7rem;
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+.short-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.preview-btn {
+    padding: 6px 10px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.preview-btn:hover {
+    background: var(--primary-dark);
 }
 
 .download-btn {

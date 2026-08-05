@@ -1,0 +1,18 @@
+# Git
+.git
+.gitignore
+
+# Node modules (if any)
+node_modules
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

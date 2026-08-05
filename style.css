@@ -11,8 +11,8 @@
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --radius: 16px;
-    --radius-sm: 8px;
+    --radius: 12px;
+    --radius-sm: 6px;
     --transition: all 0.3s ease;
 }
 
@@ -30,49 +30,49 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 16px;
-    line-height: 1.6;
+    padding: 12px;
+    line-height: 1.5;
 }
 
 .container {
-    max-width: 480px;
+    max-width: 380px;
     width: 100%;
     background: var(--surface);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
-    padding: 32px 24px;
+    padding: 24px 20px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.025em;
 }
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 500;
 }
 
 .upload-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .upload-area {
     border: 2px dashed var(--border);
     border-radius: var(--radius);
-    padding: 48px 24px;
+    padding: 32px 20px;
     text-align: center;
     cursor: pointer;
     transition: var(--transition);
@@ -111,58 +111,59 @@ header h1 {
 }
 
 .upload-icon {
-    font-size: 3.5rem;
-    margin-bottom: 16px;
+    font-size: 2.5rem;
+    margin-bottom: 12px;
 }
 
 .upload-area p {
     color: var(--text-primary);
     margin-bottom: 4px;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
 }
 
 .upload-hint {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
 }
 
 .video-info {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%);
-    padding: 16px;
+    padding: 12px;
     border-radius: var(--radius-sm);
-    margin-top: 16px;
+    margin-top: 12px;
     border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .video-info p {
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     font-weight: 500;
+    font-size: 0.85rem;
 }
 
 .settings-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .setting-group {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .setting-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 .setting-group select {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
-    font-size: 1rem;
+    font-size: 0.9rem;
     background: var(--surface);
     color: var(--text-primary);
     cursor: pointer;
@@ -171,8 +172,8 @@ header h1 {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 20px;
+    background-position: right 12px center;
+    background-size: 16px;
 }
 
 .setting-group select:focus {
@@ -183,12 +184,12 @@ header h1 {
 
 .btn-primary {
     width: 100%;
-    padding: 16px;
+    padding: 12px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
@@ -213,16 +214,16 @@ header h1 {
 
 .btn-secondary {
     width: 100%;
-    padding: 14px;
+    padding: 10px;
     background: var(--surface);
     color: var(--primary);
     border: 2px solid var(--primary);
     border-radius: var(--radius-sm);
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
-    margin-top: 20px;
+    margin-top: 16px;
     letter-spacing: 0.025em;
 }
 
@@ -233,16 +234,16 @@ header h1 {
 }
 
 .progress-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .progress-bar {
     width: 100%;
-    height: 12px;
+    height: 8px;
     background: var(--border);
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     position: relative;
 }
 
@@ -257,18 +258,18 @@ header h1 {
 #progressText {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
 .results-section {
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .results-section h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--text-primary);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     font-weight: 800;
     letter-spacing: -0.025em;
 }
@@ -276,15 +277,15 @@ header h1 {
 .shorts-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
 .short-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 12px;
     background: var(--background);
     border-radius: var(--radius-sm);
     transition: var(--transition);
@@ -294,7 +295,7 @@ header h1 {
 .short-item:hover {
     background: var(--surface);
     border-color: var(--primary);
-    transform: translateX(4px);
+    transform: translateX(2px);
     box-shadow: var(--shadow-sm);
 }
 
@@ -305,23 +306,23 @@ header h1 {
 .short-name {
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 4px;
-    font-size: 0.95rem;
+    margin-bottom: 3px;
+    font-size: 0.85rem;
 }
 
 .short-time {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
 .download-btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
     color: white;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
@@ -339,14 +340,14 @@ header h1 {
 
 footer {
     text-align: center;
-    margin-top: 32px;
-    padding-top: 20px;
+    margin-top: 24px;
+    padding-top: 16px;
     border-top: 1px solid var(--border);
 }
 
 footer p {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 500;
 }
 
@@ -385,26 +386,26 @@ footer p {
 /* Tablet and up */
 @media (min-width: 481px) {
     .container {
-        max-width: 560px;
-        padding: 40px 32px;
+        max-width: 420px;
+        padding: 28px 24px;
     }
 
     header h1 {
-        font-size: 2.5rem;
+        font-size: 1.75rem;
     }
 
     .upload-area {
-        padding: 56px 32px;
+        padding: 40px 24px;
     }
 }
 
 /* Desktop */
 @media (min-width: 768px) {
     body {
-        padding: 24px;
+        padding: 20px;
     }
 
     .container {
-        max-width: 640px;
+        max-width: 460px;
     }
 }

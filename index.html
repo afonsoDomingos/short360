@@ -10,14 +10,14 @@
     <div class="container">
         <header>
             <h1>Shorts360</h1>
-            <p class="subtitle">Crie shorts automaticamente em segundos</p>
+            <p class="subtitle">Crie shorts automaticamente</p>
         </header>
 
         <main>
             <div class="upload-section">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📹</div>
-                    <p>Arraste e solte seu vídeo aqui</p>
+                    <p>Arraste seu vídeo</p>
                     <p class="upload-hint">ou clique para selecionar</p>
                     <input type="file" id="videoInput" accept="video/*" hidden>
                 </div>
@@ -29,17 +29,17 @@
 
             <div class="settings-section">
                 <div class="setting-group">
-                    <label for="shortDuration">Duração de cada short:</label>
+                    <label for="shortDuration">Duração:</label>
                     <select id="shortDuration">
-                        <option value="15">15 segundos</option>
-                        <option value="30" selected>30 segundos</option>
-                        <option value="45">45 segundos</option>
-                        <option value="60">60 segundos</option>
+                        <option value="15">15s</option>
+                        <option value="30" selected>30s</option>
+                        <option value="45">45s</option>
+                        <option value="60">60s</option>
                     </select>
                 </div>
 
                 <button id="generateBtn" class="btn-primary" disabled>
-                    ✨ Gerar Shorts
+                    Gerar Shorts
                 </button>
             </div>
 
@@ -51,16 +51,16 @@
             </div>
 
             <div class="results-section" id="resultsSection" style="display: none;">
-                <h2>✨ Shorts Gerados</h2>
+                <h2>Shorts Gerados</h2>
                 <div class="shorts-list" id="shortsList"></div>
                 <button id="downloadAllBtn" class="btn-secondary">
-                    📥 Baixar Todos
+                    Baixar Todos
                 </button>
             </div>
         </main>
 
         <footer>
-            <p>Shorts360 - Simples e Rápido</p>
+            <p>Shorts360</p>
         </footer>
     </div>
 
